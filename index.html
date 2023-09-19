@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<head>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdn.socket.io/4.4.1/socket.io.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        body {
+          margin: 0 auto;
+          max-width: 800px;
+          padding: 0 20px;
+        }
+        
+        .container {
+          border: 2px solid #dedede;
+          background-color: #f1f1f1;
+          border-radius: 5px;
+          padding: 10px;
+          margin: 10px 0;
+        }
+        
+        .darker {
+          border-color: #ccc;
+          background-color: #ddd;
+        }
+        
+        .container::after {
+          content: "";
+          clear: both;
+          display: table;
+        }
+        
+        .container img {
+          float: left;
+          max-width: 60px;
+          width: 100%;
+          margin-right: 20px;
+          border-radius: 50%;
+        }
+        
+        .container img.right {
+          float: right;
+          margin-left: 20px;
+          margin-right:0;
+        }
+        
+        .time-right {
+          float: right;
+          color: #aaa;
+        }
+        
+        .time-left {
+          float: left;
+          color: #999;
+        }
+        </style>
+        </head>
+        <body>
+        
+        <h2>Chat Messages</h2>
+        <div id="GetData"></div>
+    
+        </body>
+
+<script>
+    var socket;
+    let getUuid = '';
+    $.get('http://127.0.0.1:3000/getUserId').then((d) => getUuid = d.id);
+    $(document).ready(function(){
+        data = document.getElementById('GetData');
+        socket = io.connect('http://127.0.0.1:3000');
+            socket.on('connect', function(){
+              socket.on('getMessage', function(data){
+                  console.log(getUuid);
+                  console.log(data.userId !== getUuid);
+                  if(data.userId !== getUuid) {
+                      $('#GetData').append('<div class="container"><img src="https://www.w3schools.com/w3images/bandmember.jpg" alt="Avatar" style="width:100%;"><p>' + data.message + '</p><span class="time-right">11:00</span></div>');
+                  } else {
+                      $('#GetData').append('<div class="container darker"><img src="https://www.w3schools.com/w3images/avatar_g2.jpg" alt="Avatar" class="right" style="width:100%;"><p>' + data.message + '</p><span class="time-left">11:01</span></div>');
+                  }
+              })
+          });
+    });
+</script>
+</html>
